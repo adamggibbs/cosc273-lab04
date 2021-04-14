@@ -1,65 +1,97 @@
+/*
+ * Primes.java: Compute an array of prime numbers up to a given (int)
+ * value. The primary function is public static int[]
+ * getPrimesUpTo(int max). This method returns an array of all primes
+ * up to max (exclusive) in increasing order.
+ */
+
+
 public class Primes {
-    //public static final int ROOT_MAX = (int) Math.sqrt(Integer.MAX_VALUE);
-    public static final int ROOT_MAX = 11_000;
-    public static final int MAX = ROOT_MAX * ROOT_MAX;
-    public static final int N_PRIMES = (int) (1.2 * MAX / Math.log(MAX));
 
-    public static boolean[] isPrime = new boolean[MAX];
-    public static int[] primes = new int[N_PRIMES];
+    private static final int MAX = 100_000_000;
 
-    public static int countPrimes () {
-    	int i = 0;
-    	for (i = 0; i < MAX; ++i) {
-    	    if (primes[i] == 0)
-    		break;
-    	}
-
-    	return i;
-    }
-
-    
-
-    public static void main (String[] args) {
-	long start = System.nanoTime();
-
+    private static boolean[] getIsPrime (int max) {
+	int rootMax = (int) Math.sqrt(max);
+	boolean[] isPrime = new boolean[max];
+	
 	// initialize isPrime[i] to true for i >= 2
-	for (int i = 2; i < MAX; ++i) {
+	for (int i = 2; i < max; ++i) {
 	    isPrime[i] = true;
 	}
-
-	int curIndex = 0;
 
 	// use sieve of Eratosthenes to compute isPrime[i]
 	// after calling this, isPrime[i] evaluates to true
 	// if and only if i is prime
-	for (int i = 0; i < MAX; ++i) {
+	for (int i = 0; i < max; ++i) {
 	    if (isPrime[i]) {
-		primes[curIndex] = i;
-		++curIndex;
 
-		if (i < ROOT_MAX) {
+		// mark multiples of i as composite
+		if (i <= rootMax) {
+		    
 		    int j = i * i;
 
-		    while (j < MAX) {
+		    while (true) {
+			
 			isPrime[j] = false;
+			
+			if (j >= max - i) {
+			    break;
+			}
+			
 			j += i;
 		    }
-		}
+		} 
 	    }
 	}
 
-	// int index = 0;
+	return isPrime;
+    }
+
+    // count the number of primes (i.e. true values) in isPrime
+    private static int countPrimes (boolean[] isPrime) {
+    	int count = 0;
+
+	for (boolean b : isPrime) {
+	    if (b) {
+		++count;
+	    }
+	}
+
+	return count;
+    }
+
+    /*
+     * compute the primes up to max and return an array consisting of
+     * those primes. The returned array is in sorted order.
+     */
+    public static int[] getPrimesUpTo(int max) {
+	boolean[] isPrime = getIsPrime(max);
+	int nPrimes = countPrimes(isPrime);
+
+	int[] primes = new int[nPrimes];
+
+	int count = 0;
 	
-	// for (int i = 0; i < MAX; ++i) {
-	//     if (isPrime[i]) {
-	// 	primes[index] = i;
-	// 	++index;
-	//     }
-	// }
+	for (int i = 0; i < isPrime.length; ++i) {
+	    if (isPrime[i]) {
+		primes[count] = i;
+		++count;
+	    }
+	}
+
+	return primes;
+    }
+
+    
+    public static void main (String[] args) {
+	
+	long start = System.nanoTime();
+
+	int[] primes = getPrimesUpTo(MAX);
 
 	long stop = System.nanoTime();
 
-	System.out.println("Computed first " + countPrimes() + " primes in " + (stop - start) / 1_000_000 + " ms. The largest prime is " + primes[curIndex - 1] + ".");
+	System.out.println("Computed first " + primes.length + " primes in " + (stop - start) / 1_000_000 + " ms. The largest prime is " + primes[primes.length - 1] + ".");
 	
     }
 }
