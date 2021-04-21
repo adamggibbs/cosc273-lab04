@@ -8,56 +8,56 @@
 
 public class Primes {
 
-    private static final int MAX = 100_000_000;
+    private static final int MAX = 80_000_000;
 
-    private static boolean[] getIsPrime (int max) {
-	int rootMax = (int) Math.sqrt(max);
-	boolean[] isPrime = new boolean[max];
-	
-	// initialize isPrime[i] to true for i >= 2
-	for (int i = 2; i < max; ++i) {
-	    isPrime[i] = true;
-	}
+    public static boolean[] getIsPrime (int max) {
+		int rootMax = (int) Math.sqrt(max);
+		boolean[] isPrime = new boolean[max];
+		
+		// initialize isPrime[i] to true for i >= 2
+		for (int i = 2; i < max; ++i) {
+			isPrime[i] = true;
+		}
 
-	// use sieve of Eratosthenes to compute isPrime[i]
-	// after calling this, isPrime[i] evaluates to true
-	// if and only if i is prime
-	for (int i = 0; i < max; ++i) {
-	    if (isPrime[i]) {
+		// use sieve of Eratosthenes to compute isPrime[i]
+		// after calling this, isPrime[i] evaluates to true
+		// if and only if i is prime
+		for (int i = 0; i < max; ++i) {
+			if (isPrime[i]) {
 
-		// mark multiples of i as composite
-		if (i <= rootMax) {
-		    
-		    int j = i * i;
+				// mark multiples of i as composite
+				if (i <= rootMax) {
+					
+					int j = i * i;
 
-		    while (true) {
-			
-			isPrime[j] = false;
-			
-			if (j >= max - i) {
-			    break;
+					while (true) {
+					
+						isPrime[j] = false;
+						
+						if (j >= max - i) {
+							break;
+						}
+						
+						j += i;
+					}
+				}	 
 			}
-			
-			j += i;
-		    }
-		} 
-	    }
-	}
+		}
 
-	return isPrime;
+		return isPrime;
     }
 
     // count the number of primes (i.e. true values) in isPrime
     private static int countPrimes (boolean[] isPrime) {
-    	int count = 0;
+			int count = 0;
 
-	for (boolean b : isPrime) {
-	    if (b) {
-		++count;
-	    }
-	}
+		for (boolean b : isPrime) {
+			if (b) {
+			++count;
+			}
+		}
 
-	return count;
+		return count;
     }
 
     /*
@@ -65,21 +65,21 @@ public class Primes {
      * those primes. The returned array is in sorted order.
      */
     public static int[] getPrimesUpTo(int max) {
-	boolean[] isPrime = getIsPrime(max);
-	int nPrimes = countPrimes(isPrime);
+		boolean[] isPrime = getIsPrime(max);
+		int nPrimes = countPrimes(isPrime);
 
-	int[] primes = new int[nPrimes];
+		int[] primes = new int[nPrimes];
 
-	int count = 0;
-	
-	for (int i = 0; i < isPrime.length; ++i) {
-	    if (isPrime[i]) {
-		primes[count] = i;
-		++count;
-	    }
-	}
+		int count = 0;
+		
+		for (int i = 0; i < isPrime.length; ++i) {
+			if (isPrime[i]) {
+			primes[count] = i;
+			++count;
+			}
+		}
 
-	return primes;
+		return primes;
     }
 
     
